@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  email     String   @unique
+  firstName String?
+  lastName  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  bookings  Booking[]
+}
+
+model Court {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  timeSlots   TimeSlot[]
+  bookings    Booking[]
+}
+
+model TimeSlot {
+  id        String   @id @default(cuid())
+  courtId   String
+  startTime String   // Format: "HH:MM" (e.g., "09:00")
+  endTime   String   // Format: "HH:MM" (e.g., "10:00")
+  dayOfWeek Int      // 0-6 (Sunday = 0, Monday = 1, etc.)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  court     Court    @relation(fields: [courtId], references: [id], onDelete: Cascade)
+  bookings  Booking[]
+  
+  @@unique([courtId, startTime, endTime, dayOfWeek])
+}
+
+model Booking {
+  id         String   @id @default(cuid())
+  courtId    String
+  timeSlotId String
+  userId     String?  // Optional for backward compatibility
+  customerName String
+  customerEmail String
+  customerPhone String?
+  bookingDate DateTime
+  status     BookingStatus @default(PENDING)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  // Relations
+  court      Court     @relation(fields: [courtId], references: [id], onDelete: Cascade)
+  timeSlot   TimeSlot  @relation(fields: [timeSlotId], references: [id], onDelete: Cascade)
+  user       User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}

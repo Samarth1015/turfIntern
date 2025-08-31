@@ -1,0 +1,305 @@
+{
+  "info": {
+    "name": "Turf Booking API",
+    "description": "API collection for the Turf Booking Application",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Courts",
+      "item": [
+        {
+          "name": "Get All Courts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/courts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "courts"]
+            }
+          }
+        },
+        {
+          "name": "Get Court by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/courts/court-1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "courts", "court-1"]
+            }
+          }
+        },
+        {
+          "name": "Create Court",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tennis Court 1\",\n  \"description\": \"Professional tennis court with hard surface\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/courts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "courts"]
+            }
+          }
+        },
+        {
+          "name": "Update Court",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Tennis Court 1\",\n  \"description\": \"Updated description\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/courts/court-1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "courts", "court-1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Court",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/courts/court-1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "courts", "court-1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Time Slots",
+      "item": [
+        {
+          "name": "Get Time Slots for Court",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/timeslots/court/court-1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "timeslots", "court", "court-1"]
+            }
+          }
+        },
+        {
+          "name": "Get Available Slots",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/timeslots/available/court-1?date=2024-01-15",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "timeslots", "available", "court-1"],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2024-01-15"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Time Slot",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courtId\": \"court-1\",\n  \"startTime\": \"14:00\",\n  \"endTime\": \"15:00\",\n  \"dayOfWeek\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/timeslots",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "timeslots"]
+            }
+          }
+        },
+        {
+          "name": "Update Time Slot",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startTime\": \"15:00\",\n  \"endTime\": \"16:00\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/timeslots/{timeSlotId}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "timeslots", "{timeSlotId}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "Get All Bookings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookings"]
+            }
+          }
+        },
+        {
+          "name": "Get Booking by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings/{bookingId}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookings", "{bookingId}"]
+            }
+          }
+        },
+        {
+          "name": "Create Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courtId\": \"court-1\",\n  \"timeSlotId\": \"{timeSlotId}\",\n  \"customerName\": \"John Doe\",\n  \"customerEmail\": \"john@example.com\",\n  \"customerPhone\": \"+1234567890\",\n  \"bookingDate\": \"2024-01-15T00:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookings"]
+            }
+          }
+        },
+        {
+          "name": "Update Booking",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CONFIRMED\",\n  \"customerName\": \"John Smith\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings/{bookingId}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookings", "{bookingId}"]
+            }
+          }
+        },
+        {
+          "name": "Cancel Booking",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings/{bookingId}/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookings", "{bookingId}", "cancel"]
+            }
+          }
+        },
+        {
+          "name": "Get Bookings by Court",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings/court/court-1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookings", "court", "court-1"]
+            }
+          }
+        },
+        {
+          "name": "Get Bookings by Date",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings/date/2024-01-15",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookings", "date", "2024-01-15"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001",
+      "type": "string"
+    },
+    {
+      "key": "timeSlotId",
+      "value": "your-time-slot-id-here",
+      "type": "string"
+    },
+    {
+      "key": "bookingId",
+      "value": "your-booking-id-here",
+      "type": "string"
+    }
+  ]
+}
