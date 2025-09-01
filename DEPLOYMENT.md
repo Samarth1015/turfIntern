@@ -1,186 +1,98 @@
-# Deployment Guide
+# Deployment Guide for Vercel
 
-This guide will help you deploy the Turf Booking Application to production.
+This guide will help you deploy the Turf Booking Application to production using Vercel for both the frontend and backend.
 
-## 🚀 Backend Deployment (Render/Railway)
+## 🚀 Deployment on Vercel
 
-### Option 1: Render
+Vercel simplifies the deployment process by handling both the Next.js frontend and the Express backend in a monorepo setup.
 
-1. **Create Render Account**
-   - Go to [render.com](https://render.com) and sign up
-   - Connect your GitHub account
+### 1. Project Configuration for Vercel
 
-2. **Deploy Backend**
-   - Click "New +" → "Web Service"
-   - Connect your GitHub repository
-   - Select the `server` directory
-   - Configure the service:
-     - **Name**: `turf-booking-backend`
-     - **Environment**: `Node`
-     - **Build Command**: `npm install && npm run build`
-     - **Start Command**: `npm start`
-     - **Plan**: Free (or choose paid plan)
+Vercel can automatically detect and deploy your monorepo with the correct settings. Ensure your `vercel.json` or `package.json` is configured correctly if you need to customize the build process. For this project, Vercel's zero-config deployments should work out of the box.
 
-3. **Environment Variables**
-   - Add the following environment variables:
-     ```
-     DATABASE_URL=your_supabase_connection_string
-     NODE_ENV=production
-     PORT=10000
-     ```
+### 2. Deploying the Project
 
-4. **Deploy**
-   - Click "Create Web Service"
-   - Wait for deployment to complete
-   - Note the generated URL (e.g., `https://your-app.onrender.com`)
+1.  **Create a Vercel Account**
+    *   Go to [vercel.com](https://vercel.com) and sign up.
+    *   Connect your GitHub account.
 
-### Option 2: Railway
+2.  **Import Your Project**
+    *   Click "New Project".
+    *   Import your GitHub repository.
 
-1. **Create Railway Account**
-   - Go to [railway.app](https://railway.app) and sign up
-   - Connect your GitHub account
+3.  **Configure the Project**
+    *   Vercel will automatically detect that you are using a Next.js application in the `my-app` directory.
+    *   It will also detect the `server` directory and configure it as a serverless function.
+    *   **Framework Preset**: Next.js
+    *   **Root Directory**: `my-app` (Vercel should automatically set this, but if you have a choice, select the frontend app's directory).
 
-2. **Deploy Backend**
-   - Click "New Project" → "Deploy from GitHub repo"
-   - Select your repository
-   - Set the root directory to `server`
-   - Railway will auto-detect Node.js
+### 3. Environment Variables
 
-3. **Environment Variables**
-   - Add the same environment variables as above
+You need to add your environment variables to Vercel.
 
-4. **Deploy**
-   - Railway will automatically deploy and provide a URL
+*   Go to your project's "Settings" tab and then "Environment Variables".
+*   Add the following variables:
 
-## 🌐 Frontend Deployment (Vercel/Netlify)
+    ```
+    DATABASE_URL=your_supabase_connection_string
+    NODE_ENV=production
+    NEXT_PUBLIC_API_URL=/api 
+    ```
+    *Note: `NEXT_PUBLIC_API_URL` is set to `/api` because Vercel will proxy requests from the frontend to the backend serverless functions.*
 
-### Option 1: Vercel
+### 4. Deploy
 
-1. **Create Vercel Account**
-   - Go to [vercel.com](https://vercel.com) and sign up
-   - Connect your GitHub account
-
-2. **Deploy Frontend**
-   - Click "New Project"
-   - Import your GitHub repository
-   - Configure the project:
-     - **Framework Preset**: Next.js
-     - **Root Directory**: `my-app`
-     - **Build Command**: `npm run build`
-     - **Output Directory**: `.next`
-
-3. **Environment Variables**
-   - Add the following environment variable:
-     ```
-     NEXT_PUBLIC_API_URL=https://your-backend-url.com
-     ```
-
-4. **Deploy**
-   - Click "Deploy"
-   - Wait for deployment to complete
-
-### Option 2: Netlify
-
-1. **Create Netlify Account**
-   - Go to [netlify.com](https://netlify.com) and sign up
-   - Connect your GitHub account
-
-2. **Deploy Frontend**
-   - Click "New site from Git"
-   - Select your repository
-   - Configure the build settings:
-     - **Base directory**: `my-app`
-     - **Build command**: `npm run build`
-     - **Publish directory**: `.next`
-
-3. **Environment Variables**
-   - Add the same environment variable as above
-
-4. **Deploy**
-   - Click "Deploy site"
+*   Click "Deploy".
+*   Vercel will build and deploy your application. After the deployment is complete, you will get a URL for your live site.
 
 ## 🗄️ Database Setup (Supabase)
 
-1. **Create Supabase Project**
-   - Go to [supabase.com](https://supabase.com) and sign up
-   - Create a new project
+1.  **Create Supabase Project**
+    *   Go to [supabase.com](https://supabase.com) and sign up.
+    *   Create a new project.
 
-2. **Get Connection String**
-   - Go to Settings → Database
-   - Copy the connection string
+2.  **Get Connection String**
+    *   Go to Settings → Database.
+    *   Copy the connection string.
 
-3. **Run Migrations**
-   - Update your backend environment variable with the connection string
-   - Run the migration command:
-     ```bash
-     npm run prisma:migrate
-     ```
+3.  **Run Migrations**
+    *   Update your Vercel environment variable (`DATABASE_URL`) with the connection string.
+    *   To run migrations, you can either do it locally pointing to the production database (with caution) or set up a script in your `package.json` that Vercel can run. For simplicity, running it locally is often easiest for smaller projects:
+        ```bash
+        # Ensure your local .env file in the server directory has the production DATABASE_URL
+        npm run prisma:migrate
+        ```
 
-4. **Seed Database**
-   - Run the seed command:
-     ```bash
-     npm run prisma:seed
-     ```
+4.  **Seed Database**
+    *   Run the seed command locally against your production database:
+        ```bash
+        npm run prisma:seed
+        ```
 
 ## 🔧 Post-Deployment
 
-1. **Update Frontend API URL**
-   - Ensure your frontend environment variable points to the deployed backend
+1.  **Test the Application**
+    *   Test all API endpoints through your frontend.
+    *   Test the booking flow.
+    *   Check mobile responsiveness.
 
-2. **Test the Application**
-   - Test all API endpoints
-   - Test the booking flow
-   - Check mobile responsiveness
-
-3. **Monitor Logs**
-   - Check your deployment platform's logs for any errors
-   - Monitor database connections
+2.  **Monitor Logs**
+    *   Check your Vercel dashboard logs for any errors.
+    *   Monitor database connections in Supabase.
 
 ## 🚨 Common Issues
 
 ### CORS Errors
-- Ensure your backend CORS configuration allows your frontend domain
-- Update the CORS_ORIGIN environment variable
+*   With Vercel's proxying, you might not face CORS issues between the frontend and backend. If you do, ensure your backend's CORS configuration is correctly set up to allow your frontend's domain.
 
 ### Database Connection Issues
-- Verify your DATABASE_URL is correct
-- Check if your database allows external connections
-- Ensure your IP is whitelisted if required
+*   Verify your `DATABASE_URL` is correct in the Vercel environment variables.
+*   Check if your Supabase database allows external connections.
 
 ### Build Failures
-- Check if all dependencies are in package.json
-- Verify Node.js version compatibility
-- Check build logs for specific error messages
-
-## 📊 Performance Optimization
-
-1. **Database Indexing**
-   - Add indexes to frequently queried fields
-   - Use Prisma's built-in optimization features
-
-2. **Caching**
-   - Implement Redis for session storage
-   - Add API response caching
-
-3. **CDN**
-   - Use Vercel's edge functions
-   - Implement static asset optimization
-
-## 🔒 Security Considerations
-
-1. **Environment Variables**
-   - Never commit sensitive data to Git
-   - Use secure environment variable management
-
-2. **API Security**
-   - Implement rate limiting
-   - Add request validation
-   - Use HTTPS in production
-
-3. **Database Security**
-   - Use connection pooling
-   - Implement proper user permissions
-   - Regular security updates
+*   Check if all dependencies are in `package.json`.
+*   Verify Node.js version compatibility in your Vercel project settings.
+*   Check build logs on the Vercel dashboard for specific error messages.
 
 ---
 
